@@ -2,7 +2,7 @@ import { useDeleteContactsMutation } from 'redux/apiSlice';
 import React from 'react';
 import PropTypes from 'prop-types';
 import s from './Contacts.module.scss';
-import { isDisabled } from '@testing-library/user-event/dist/utils';
+
 export default function ContactListItem({ id, name, number }) {
   const [deleteItem, { isLoading: isDeleting }] = useDeleteContactsMutation();
 
@@ -31,5 +31,4 @@ ContactListItem.propType = {
       number: PropTypes.string.isRequired,
     })
   ),
-  onClick: PropTypes.func,
 };
