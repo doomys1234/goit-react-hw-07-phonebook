@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import s from './Phonebook.module.scss';
 
-function Phonebook({ onSubmit }) {
+function Phonebook({ onSubmit, adding }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -56,7 +56,7 @@ function Phonebook({ onSubmit }) {
         value={number}
         onChange={handleChange}
       />
-      <button className={s.button} type="submit">
+      <button className={s.button} type="submit" disabled={adding}>
         Add Contact
       </button>
     </form>

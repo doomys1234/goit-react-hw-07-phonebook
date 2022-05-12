@@ -3,18 +3,11 @@ import PropTypes from 'prop-types';
 import s from './Contacts.module.scss';
 import ContactListItem from './ContactsListItem';
 
-
-export default function Contacts({ contacts, onClick }) {
+export default function Contacts({ contacts }) {
   return (
     <ul className={s.contacts}>
       {contacts.map(({ id, name, number }) => (
-        <ContactListItem
-          key={id}
-          id={id}
-          name={name}
-          number={number}
-          onClick={onClick}
-        />
+        <ContactListItem key={id} id={id} name={name} number={number} />
       ))}
     </ul>
   );
@@ -26,7 +19,6 @@ Contacts.propType = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       number: PropTypes.string.isRequired,
-    }),
+    })
   ),
-  onClick: PropTypes.func,
 };

@@ -1,13 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useGetContactsQuery, useAddContactsMutation } from 'redux/apiSlice';
 import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-import {
-  filterItems,
-  addNewContact,
-  deleteContactStore,
-} from './redux/contactSLice';
-import { filterSelector, contactsStore } from './redux/selectors';
+import 'react-toastify/dist/ReactToastify.css';
+import { filterItems } from './redux/contactSLice';
 
+import { filterSelector } from './redux/selectors';
 import Phonebook from './components/Phonebook/Phonebook';
 import Contacts from './components/Contacts/Contacts';
 import Filter from './components/Filter/Filter';
@@ -17,7 +14,9 @@ import s from './App.module.scss';
 function App() {
   const dispatch = useDispatch();
   const valueFilter = useSelector(state => filterSelector(state));
-  const contacts = useSelector(state => contactsStore(state));
+  const { data, isLoading, error } = useGetContactsQuery();
+  const [addItem, { isLoading: isAdding }] = useAddContactsMutation();
+  const contacts = data;
 
   const addContact = e => {
     const name = e.currentTarget.elements.name.value;
@@ -25,7 +24,7 @@ function App() {
     console.log(name, number);
     if (contacts.find(contact => contact.name === name)) {
       toast.error(`${name} is already exists`);
-      
+
       return;
     }
 
@@ -35,36 +34,45 @@ function App() {
       number,
     };
 
-    dispatch(addNewContact(newContact));
+    addItem(newContact);
+    toast.success('Horay! Contact is added :)');
   };
 
   const filterChange = e => {
     dispatch(filterItems(e.currentTarget.value));
   };
 
-  const deleteContact = numId => {
-    dispatch(deleteContactStore(numId));
+  const getNormalizedContacts = contacts => {
+    if (isLoading) {
+      return;
+    }
+    const normalizedFilter = valueFilter.toLowerCase();
+    return contacts.filter(item =>
+      item.name.toLowerCase().includes(normalizedFilter)
+    );
   };
-
-  const normalizedFilter = valueFilter.toLowerCase();
-
-  const filteredItem = contacts.filter(item =>
-    item.name.toLowerCase().includes(normalizedFilter)
-  );
+  const filteredItems = getNormalizedContacts(contacts);
 
   return (
     <div className={s.container}>
-      <h1 className={s.title}>Phonebook</h1>
-      <Phonebook onSubmit={addContact} />
-      <h2 className={s.contacts}>Contacts</h2>
-
-      <Filter value={valueFilter} onChange={filterChange} />
-      {contacts.length ? (
-        <Contacts contacts={filteredItem} onClick={deleteContact} />
+      <h1 className={s.title}> Phonebook </h1>{' '}
+      <Phonebook onSubmit={addContact} adding={isAdding} />{' '}
+      <h2 className={s.contacts}> Contacts </h2>
+      <Filter value={valueFilter} onChange={filterChange} />{' '}
+      {!isLoading ? (
+        <Contacts contacts={filteredItems} />
       ) : (
-          <h2 style={{ textAlign: 'center', marginTop: "100px" }}>You do not have contacts yet</h2>
+        <h2
+          style={{
+            textAlign: 'center',
+            marginTop: '100px',
+          }}
+        >
+          {'Please wait, loading ...'}
+        </h2>
       )}
-      <ToastContainer  position={'top-right'}
+      <ToastContainer
+        position={'top-right'}
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -74,7 +82,7 @@ function App() {
         draggable
         pauseOnHover
         theme={'dark'}
-      />
+      />{' '}
     </div>
   );
 }
