@@ -14,7 +14,7 @@ import s from './App.module.scss';
 function App() {
   const dispatch = useDispatch();
   const valueFilter = useSelector(state => filterSelector(state));
-  const { data, isLoading, error } = useGetContactsQuery();
+  const { data, isLoading } = useGetContactsQuery();
   const [addItem, { isLoading: isAdding }] = useAddContactsMutation();
   const contacts = data;
 
