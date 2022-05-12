@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import s from './Contacts.module.scss';
 import ContactListItem from './ContactsListItem';
-
 export default function Contacts({ contacts }) {
   return (
     <ul className={s.contacts}>
