@@ -63,7 +63,7 @@ function Phonebook({ onSubmit, adding }) {
   );
 }
 Phonebook.propTypes = {
-  adding: PropTypes.string,
+  adding: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
 };
 
